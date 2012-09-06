@@ -1,0 +1,22 @@
+parameters:
+    teo.db_config_manager: Teo\DbConfigBundle\Manager\DbConfigEntryManager
+    teo.db_config_entry: Teo\DbConfigBundle\Entity\DbConfigEntry
+    teo.db_config_entry_repository: Teo\DbConfigBundle\Repository\DbConfigEntryRepository
+
+services:
+    teo_db_config_manager:
+        class: %teo.db_config_manager%
+        arguments:
+            repository: "@teo_db_config_repository"
+
+    teo_db_config_repository:
+        class:           %teo.db_config_entry_repository%
+        factory_service: doctrine.orm.entity_manager
+        factory_method:  getRepository
+        arguments:       [%teo.db_config_entry%]
+
+    hb_admin.db_config_entry:
+        class: Teo\DbConfigBundle\Admin\DbConfigEntryAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: Admin, label: ConfigEntry }
+        arguments: [null, Teo\DbConfigBundle\Entity\DbConfigEntry, SonataAdminBundle:CRUD]
